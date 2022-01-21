@@ -23,3 +23,23 @@ function createGalleryMarkup(galleryItems) {
     })
     .join("");
 }
+
+function onPictureClick(e) {
+  const isImageEl = e.target.classList.contains("gallery__image");
+  const imageSrc = e.target.dataset.source;
+  e.preventDefault();
+  if (!isImageEl) {
+    return;
+  }
+
+  const instance = basicLightbox.create(`
+			<img src="${imageSrc.src}" alt="${imageSrc.alt}" />`);
+  instance.show();
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") {
+      return;
+    }
+    instance.close();
+  });
+}
