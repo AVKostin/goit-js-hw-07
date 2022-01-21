@@ -33,7 +33,7 @@ function onPictureClick(e) {
   }
 
   const instance = basicLightbox.create(`
-			<img src="${imageSrc.src}" alt="${imageSrc.alt}" />`);
+			<img src="${imageSrc}" alt="${imageSrc}" />`);
   instance.show();
 
   document.addEventListener("keydown", (e) => {
