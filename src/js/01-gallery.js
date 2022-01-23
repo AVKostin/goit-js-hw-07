@@ -25,21 +25,24 @@ function createGalleryMarkup(galleryItems) {
 }
 
 function onPictureClick(e) {
-  const isImageEl = e.target.classList.contains("gallery__image");
-  const imageSrc = e.target.dataset.source;
   e.preventDefault();
-  if (!isImageEl) {
-    return;
-  }
+  if (e.target.nodeName !== "IMG") return;
+  const imageSrc = e.target.dataset.source;
+  openModal(imageSrc);
+}
 
+function openModal(imageSrc) {
   const instance = basicLightbox.create(`
-			<img src="${imageSrc}" alt="${imageSrc}" />`);
+			<img src="${imageSrc}" alt="${imageSrc}" width="640" height="480"/>`);
   instance.show();
-
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") {
-      return;
+    if (e.key === "Escape") {
+      instance.close();
     }
-    instance.close();
+    onClose: (instance) => {
+      instance.removeEventListener("keydown", (e) => {
+        instance.close();
+      });
+    };
   });
 }
