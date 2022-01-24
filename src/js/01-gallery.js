@@ -28,21 +28,31 @@ function onPictureClick(e) {
   e.preventDefault();
   if (e.target.nodeName !== "IMG") return;
   const imageSrc = e.target.dataset.source;
-  openModal(imageSrc);
-}
 
-function openModal(imageSrc) {
-  const instance = basicLightbox.create(`
-			<img src="${imageSrc}" alt="${imageSrc}" width="640" height="480"/>`);
-  instance.show();
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      instance.close();
-    }
-    onClose: (instance) => {
-      instance.removeEventListener("keydown", (e) => {
-        instance.close();
-      });
-    };
+  const instance = {
+    onShow: () => {
+      window.addEventListener("keydown", onEscClick);
+    },
+    onClose: () => {
+      window.removeEventListener("keydown", onEscClick);
+    },
+  };
+
+  const showOriginalImage = basicLightbox.create(
+    `
+          <img src="${imageSrc}" alt="${imageSrc}" width="640" height="480"/>`,
+    { instance }
+  );
+
+  showOriginalImage.show(() => {
+    instance.onShow();
   });
+
+  function onEscClick(e) {
+    if (e.key === "Escape") {
+      showOriginalImage.close(() => {
+        instance.onClose();
+      });
+    }
+  }
 }
