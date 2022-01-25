@@ -26,33 +26,25 @@ function createGalleryMarkup(galleryItems) {
 
 function onPictureClick(e) {
   e.preventDefault();
+  window.addEventListener("keydown", onEscClick);
+
   if (e.target.nodeName !== "IMG") return;
   const imageSrc = e.target.dataset.source;
 
-  const instance = {
-    onShow: () => {
-      window.addEventListener("keydown", onEscClick);
-    },
-    onClose: () => {
-      window.removeEventListener("keydown", onEscClick);
-    },
-  };
-
   const showOriginalImage = basicLightbox.create(
-    `
-          <img src="${imageSrc}" alt="${imageSrc}" width="640" height="480"/>`,
-    { instance }
+    `<img src="${imageSrc}" alt="${imageSrc}" width="640" height="480"/>`,
+    {
+      onClose: () => {
+        window.removeEventListener("keydown", onEscClick);
+      },
+    }
   );
 
-  showOriginalImage.show(() => {
-    instance.onShow();
-  });
+  showOriginalImage.show();
 
   function onEscClick(e) {
     if (e.key === "Escape") {
-      showOriginalImage.close(() => {
-        instance.onClose();
-      });
+      showOriginalImage.close();
     }
   }
 }
